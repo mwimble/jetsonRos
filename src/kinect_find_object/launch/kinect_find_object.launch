@@ -1,5 +1,0 @@
-<!--xml-->
-<launch>
-	<node pkg="kinect_find_object" type="kinect_find_object_node" name="kinect_find_object" output="screen" >
-	</node>
-</launch>

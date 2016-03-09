@@ -1,0 +1,8 @@
+<launch>
+ 	<include file="$(find freenect_launch)/launch/freenect.launch" >
+ 	</include>
+
+	<node pkg="kaimi_near_camera" name="kaimi_near_camera" type="kaimi_near_camera_node" respawn="true" output="screen" >
+	</node>
+
+</launch>

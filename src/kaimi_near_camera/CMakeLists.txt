@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(kinect_find_object)
+project(kaimi_near_camera)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -102,10 +102,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
- LIBRARIES kinect_find_object
- CATKIN_DEPENDS cv_bridge image_transport roscpp rospy std_msgs
- DEPENDS system_lib
+  INCLUDE_DIRS include
+#  LIBRARIES kaimi_near_camera
+  CATKIN_DEPENDS cv_bridge image_transport roscpp rospy std_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -120,25 +120,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(kinect_find_object
-#   src/${PROJECT_NAME}/kinect_find_object.cpp
+# add_library(kaimi_near_camera
+#   src/${PROJECT_NAME}/kaimi_near_camera.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(kinect_find_object ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(kaimi_near_camera ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(kinect_find_object_node src/kinect_find_object_node.cpp)
+add_executable(kaimi_near_camera_node src/kaimi_near_camera_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(kinect_find_object_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(kaimi_near_camera_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
-  kinect_find_object_node
+target_link_libraries(kaimi_near_camera_node
   ${catkin_LIBRARIES}
 )
 
@@ -157,7 +156,7 @@ target_link_libraries(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS kinect_find_object kinect_find_object_node
+# install(TARGETS kaimi_near_camera kaimi_near_camera_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -182,7 +181,7 @@ target_link_libraries(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_kinect_find_object.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_kaimi_near_camera.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

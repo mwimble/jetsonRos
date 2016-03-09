@@ -1,3 +1,5 @@
+// TODO dynamic params for everything.
+
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <image_transport/image_transport.h>
@@ -5,9 +7,11 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <string>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <std_msgs/String.h>
+#include <string>
 
 using namespace cv;
 using namespace std;
@@ -32,6 +36,8 @@ private:
 	string imageTopicName_;
 	image_transport::ImageTransport it_;
 	image_transport::Subscriber image_sub_;
+	ros::Publisher nearSampleFoundPub_;
+
 
   void imageCb(const sensor_msgs::ImageConstPtr& msg) {
     cv_bridge::CvImagePtr cv_ptr;
@@ -124,6 +130,18 @@ private:
 
 				Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
 				circle(cv_ptr->image, center[i], (int)radius[i], color, 2, 8, 0 );
+				stringstream msg;
+				msg << "NearCamera;Found;LEFT-RIGHT:" << lr 
+					<< ";FRONT-BACK:" << fb
+					<< ";X:" << x
+					<< ";Y:" << y
+					<< ";AREA:" << area
+					<< ";I:" << i
+					<< ";ROWS:" << cv_ptr->image.rows
+					<< ";COLS:" << cv_ptr->image.cols;
+				std_msgs::String message;
+				message.data = msg.str();
+				nearSampleFoundPub_.publish(message);
 				ROS_INFO("i: %d, area: %f, center: %f, %f, lr: %s, fb: %s", i, area, x, y, lr.c_str(), fb.c_str());
 			}
 		}
@@ -157,6 +175,7 @@ public:
 		ros::param::param<std::string>("image_topic_name", imageTopicName_, "/camera/rgb/image_color");
 		ROS_INFO("PARAM image_topic_name: %s", imageTopicName_.c_str());
 		image_sub_ = it_.subscribe(imageTopicName_.c_str(), 1, &FindObject::imageCb, this);
+		nearSampleFoundPub_ = nh_.advertise<std_msgs::String>("nearSampleFound", 2);
 	    namedWindow(OPENCV_WINDOW, CV_WINDOW_AUTOSIZE);
 		
 		//Create trackbars in "Control" window
