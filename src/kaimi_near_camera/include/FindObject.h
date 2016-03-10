@@ -13,6 +13,7 @@ using namespace std;
 class FindObject {
 private:
 
+	// Values for the sample thresholding operation.
 	int iLowH;
 	int iHighH;
 
@@ -23,7 +24,7 @@ private:
 	int iHighV;
 
 	int contourSizeThreshold;
-
+	// End values for the sample thresholding operation.
 
 	static const string OPENCV_WINDOW;
 

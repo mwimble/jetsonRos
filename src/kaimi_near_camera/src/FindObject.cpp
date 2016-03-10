@@ -27,7 +27,13 @@ void FindObject::configurationCallback(kaimi_near_camera::kaimi_near_camera_para
 	         config.contourSizeThreshold);
 	//setTrackbarPos("LowV", "Control", 13/*config.value_low*/);
 	if (findObject) {
+		findObject->iLowH = config.hue_low;
+		findObject->iHighH = config.hue_high;
+		findObject->iLowS = config.saturation_low;
+		findObject->iHighS = config.saturation_high;
 		findObject->iLowV = config.value_low;
+		findObject->iHighV = config.value_high;
+		findObject->contourSizeThreshold = config.contourSizeThreshold;
 	}
 }
 
