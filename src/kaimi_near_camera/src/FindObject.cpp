@@ -129,7 +129,7 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 				Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
 				circle(cv_ptr->image, center[i], (int)radius[i], color, 2, 8, 0 );
 				stringstream msg;
-				msg << "NearCamera;Found;LEFT-RIGHT:" << lr 
+				msg << "NearCamera:Found;LEFT-RIGHT:" << lr 
 					<< ";FRONT-BACK:" << fb
 					<< ";X:" << x
 					<< ";Y:" << y
