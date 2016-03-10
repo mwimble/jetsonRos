@@ -1,0 +1,12 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~hue_low" : \b [int] Low Hue threshold value. Range is halved, so [0..179] instead of [0..359] min: 0, default: 116, max: 179
+- \b "~hue_high" : \b [int] High Hue threshold value. Range is halved, so [0..179] instead of [0..359] min: 0, default: 134, max: 179
+- \b "~saturation_low" : \b [int] Low Saturation threshold value. Range is [0..255] min: 0, default: 50, max: 255
+- \b "~saturation_high" : \b [int] High Saturation threshold value. Range is [0..255] min: 0, default: 255, max: 255
+- \b "~value_low" : \b [int] Low Value threshold value. Range is [0..255] min: 0, default: 67, max: 255
+- \b "~value_high" : \b [int] High Value threshold value. Range is [0..255] min: 0, default: 255, max: 255
+- \b "~contourSizeThreshold" : \b [int] Minimum sample pixel area for consideration min: 0, default: 200, max: 30000
+

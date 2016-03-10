@@ -1,0 +1,13 @@
+\subsubsection usage Usage
+\verbatim
+<node name="kaimi_near_camera" pkg="kaimi_near_camera" type="kaimi_near_camera">
+  <param name="hue_low" type="int" value="116" />
+  <param name="hue_high" type="int" value="134" />
+  <param name="saturation_low" type="int" value="50" />
+  <param name="saturation_high" type="int" value="255" />
+  <param name="value_low" type="int" value="67" />
+  <param name="value_high" type="int" value="255" />
+  <param name="contourSizeThreshold" type="int" value="200" />
+</node>
+\endverbatim
+
