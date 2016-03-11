@@ -30,6 +30,7 @@ private:
 
 	ros::NodeHandle nh_;
 	string imageTopicName_;
+	bool showWindows_;
 	image_transport::ImageTransport it_;
 	image_transport::Subscriber image_sub_;
 	ros::Publisher nearSampleFoundPub_;
