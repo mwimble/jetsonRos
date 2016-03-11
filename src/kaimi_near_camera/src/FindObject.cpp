@@ -25,7 +25,6 @@ void FindObject::configurationCallback(kaimi_near_camera::kaimi_near_camera_para
 	         config.saturation_low, config.saturation_high,
 	         config.value_low, config.value_high,
 	         config.contourSizeThreshold);
-	//setTrackbarPos("LowV", "Control", 13/*config.value_low*/);
 	if (findObject) {
 		findObject->iLowH = config.hue_low;
 		findObject->iHighH = config.hue_high;
@@ -46,10 +45,9 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 		return;
     }
 
-    // Draw an example circle on the video stream
     if (1 /*cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60*/) {
     	Mat imgHSV;
-		cvtColor(cv_ptr->image, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+		cvtColor(cv_ptr->image, imgHSV, COLOR_BGR2HSV); // Convert the captured frame from BGR to HSV
 
 		Mat imgThresholded;
 		inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
@@ -126,8 +124,8 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 					fb = "VERY NEAR";
 				}
 
-				Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
-				circle(cv_ptr->image, center[i], (int)radius[i], color, 2, 8, 0 );
+				// Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
+				// circle(cv_ptr->image, center[i], (int)radius[i], color, 2, 8, 0 );
 				stringstream msg;
 				msg << "NearCamera:Found;LEFT-RIGHT:" << lr 
 					<< ";FRONT-BACK:" << fb
@@ -144,9 +142,9 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 			}
 		}
 
-		imshow(OPENCV_WINDOW, cv_ptr->image); //show the original image
-		imshow("Thresholded Image", imgThresholded); //show the thresholded image
-		cv::waitKey(1);
+		//## imshow(OPENCV_WINDOW, cv_ptr->image); //show the original image
+		//## imshow("Thresholded Image", imgThresholded); //show the thresholded image
+		//## cv::waitKey(1);
 		//cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
 
     }
@@ -177,20 +175,20 @@ FindObject::FindObject() : it_(nh_) {
 	ROS_INFO("PARAM image_topic_name: %s", imageTopicName_.c_str());
 	image_sub_ = it_.subscribe(imageTopicName_.c_str(), 1, &FindObject::imageCb, this);
 	nearSampleFoundPub_ = nh_.advertise<std_msgs::String>("nearSampleFound", 2);
-    namedWindow(OPENCV_WINDOW, CV_WINDOW_AUTOSIZE);
+    //## namedWindow(OPENCV_WINDOW, CV_WINDOW_AUTOSIZE);
 	
 	//Create trackbars in "Control" window
-	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-	cvCreateTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-	cvCreateTrackbar("HighH", "Control", &iHighH, 179);
+	//## namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+	//## cvCreateTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
+	//## cvCreateTrackbar("HighH", "Control", &iHighH, 179);
 
-	cvCreateTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-	cvCreateTrackbar("HighS", "Control", &iHighS, 255);
+	//## cvCreateTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
+	//## cvCreateTrackbar("HighS", "Control", &iHighS, 255);
 
-	cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-	cvCreateTrackbar("HighV", "Control", &iHighV, 255);
+	//## cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
+	//## cvCreateTrackbar("HighV", "Control", &iHighV, 255);
 
-	cvCreateTrackbar("contourSizeThreshold", "Control", &contourSizeThreshold, 10000);
+	//## cvCreateTrackbar("contourSizeThreshold", "Control", &contourSizeThreshold, 10000);
 }
 
 const string FindObject::OPENCV_WINDOW = "Image window";
