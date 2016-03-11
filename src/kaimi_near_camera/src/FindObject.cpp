@@ -158,38 +158,42 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 
-FindObject::FindObject() : it_(nh_) {
-	iLowH = 116;
-	iHighH = 134;
-	iLowS = 50;
-	iHighS = 255;
-	iLowV = 67;
-	iHighV = 255;
-	contourSizeThreshold = 200;
+FindObject* FindObject::Singleton() {
+	if (singleton == NULL) {
+		singleton = new FindObject();
+		singleton->iLowH = 116;
+		singleton->iHighH = 134;
+		singleton->iLowS = 50;
+		singleton->iHighS = 255;
+		singleton->iLowV = 67;
+		singleton->iHighV = 255;
+		singleton->contourSizeThreshold = 200;
 
 
-	f = boost::bind(&FindObject::configurationCallback, _1, _2);
-	dynamicConfigurationServer.setCallback(f);
+		singleton->f = boost::bind(&FindObject::configurationCallback, _1, _2);
+		singleton->dynamicConfigurationServer.setCallback(singleton->f);
 
-	ros::param::param<std::string>("image_topic_name", imageTopicName_, "/camera/rgb/image_color");
-	ROS_INFO("PARAM image_topic_name: %s", imageTopicName_.c_str());
-	image_sub_ = it_.subscribe(imageTopicName_.c_str(), 1, &FindObject::imageCb, this);
-	nearSampleFoundPub_ = nh_.advertise<std_msgs::String>("nearSampleFound", 2);
-    //## namedWindow(OPENCV_WINDOW, CV_WINDOW_AUTOSIZE);
-	
-	//Create trackbars in "Control" window
-	//## namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-	//## cvCreateTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-	//## cvCreateTrackbar("HighH", "Control", &iHighH, 179);
+		ros::param::param<std::string>("image_topic_name", singleton->imageTopicName_, "/camera/rgb/image_color");
+		ROS_INFO("PARAM image_topic_name: %s", singleton->imageTopicName_.c_str());
+		singleton->image_sub_ = singleton->it_.subscribe(singleton->imageTopicName_.c_str(), 1, &FindObject::imageCb, singleton);
+		singleton->nearSampleFoundPub_ = singleton->nh_.advertise<std_msgs::String>("nearSampleFound", 2);
+	    //## namedWindow(OPENCV_WINDOW, CV_WINDOW_AUTOSIZE);
+		
+		//Create trackbars in "Control" window
+		//## namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+		//## cvCreateTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
+		//## cvCreateTrackbar("HighH", "Control", &iHighH, 179);
 
-	//## cvCreateTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-	//## cvCreateTrackbar("HighS", "Control", &iHighS, 255);
+		//## cvCreateTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
+		//## cvCreateTrackbar("HighS", "Control", &iHighS, 255);
 
-	//## cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-	//## cvCreateTrackbar("HighV", "Control", &iHighV, 255);
+		//## cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
+		//## cvCreateTrackbar("HighV", "Control", &iHighV, 255);
 
-	//## cvCreateTrackbar("contourSizeThreshold", "Control", &contourSizeThreshold, 10000);
+		//## cvCreateTrackbar("contourSizeThreshold", "Control", &contourSizeThreshold, 10000);
+	}
 }
 
 const string FindObject::OPENCV_WINDOW = "Image window";
+FindObject* FindObject::singleton = NULL;
 

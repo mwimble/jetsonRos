@@ -41,7 +41,12 @@ private:
 
 	void imageCb(const sensor_msgs::ImageConstPtr& msg);
 
+	FindObject() : it_(nh_) {};
+	FindObject(FindObject const&) : it_(nh_) {};
+	FindObject& operator=(FindObject const&) {};
+	static FindObject* singleton;
 
 public:
-	FindObject();
+	static FindObject* Singleton();
+
 };

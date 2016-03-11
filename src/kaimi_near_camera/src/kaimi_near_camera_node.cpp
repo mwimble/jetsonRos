@@ -9,7 +9,7 @@ FindObject* findObject;
 
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "kinect_find_object_node");
-	findObject = new FindObject();
+	findObject = FindObject::Singleton();
 	ros::spin();
 	return 0;
 }
