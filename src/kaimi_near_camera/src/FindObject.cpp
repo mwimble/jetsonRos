@@ -63,7 +63,6 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
-		vector<int> smallBlobs;
 		double contourSize;
 		Mat tempImage;
 
@@ -71,30 +70,28 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 		findContours(tempImage, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 		vector<Rect> boundRect( contours.size() );
 		vector<vector<Point> > contours_poly( contours.size() );
-		vector<Point2f>center( contours.size() );
-		vector<float>radius( contours.size() );
+		Point2f center;
+		float radius;
 
 		if (!contours.empty()) {
+			// Find largest blob.
+			size_t maxBlobIndex = -1;
+			int maxBlobSize = 0;
 			for (size_t i = 0; i < contours.size(); i++) {
 				contourSize = contourArea(contours[i]);
-				if (contourSize > contourSizeThreshold) {
-					approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-					boundRect[i] = boundingRect( Mat(contours_poly[i]) );
-					minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
-       				smallBlobs.push_back(i);//#####
+				if ((contourSize > maxBlobSize) && (contourSize >= contourSizeThreshold)) {
+					maxBlobIndex = i;
+					maxBlobSize = contourSize;
 				}
 			}
 
-			// for (size_t i = 0; i < smallBlobs.size(); i++) {
-			// 	Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
-			// 	drawContours(cv_ptr->image, contours, smallBlobs[i], color, CV_FILLED, 8);
-			// }
-			for (size_t i = 0; i < contours.size(); i++) {
-				double area = contourArea(contours[i]);
-				if (area < 100) continue;
+			if (maxBlobIndex != -1) {
+				approxPolyDP( Mat(contours[maxBlobIndex]), contours_poly[maxBlobIndex], 3, true );
+				boundRect[maxBlobIndex] = boundingRect( Mat(contours_poly[maxBlobIndex]) );
+				minEnclosingCircle( (Mat) contours_poly[maxBlobIndex], center, radius );
 
-				double x = center[i].x;
-				double y = center[i].y;
+				double x = center.x;
+				double y = center.y;
 
 				int cols = cv_ptr->image.cols;
 				int rows = cv_ptr->image.rows;
@@ -126,7 +123,7 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 
 				if (showWindows_) {
 					Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
-					circle(cv_ptr->image, center[i], (int)radius[i], color, 2, 8, 0 );
+					circle(cv_ptr->image, center, (int)radius, color, 2, 8, 0 );
 				}
 
 				stringstream msg;
@@ -134,15 +131,23 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 					<< ";FRONT-BACK:" << fb
 					<< ";X:" << x
 					<< ";Y:" << y
-					<< ";AREA:" << area
-					<< ";I:" << i
+					<< ";AREA:" << maxBlobSize
+					<< ";I:" << maxBlobIndex
 					<< ";ROWS:" << cv_ptr->image.rows
 					<< ";COLS:" << cv_ptr->image.cols;
 				std_msgs::String message;
 				message.data = msg.str();
 				nearSampleFoundPub_.publish(message);
-//				ROS_INFO("i: %d, area: %f, center: %f, %f, lr: %s, fb: %s", i, area, x, y, lr.c_str(), fb.c_str());
+//				ROS_INFO("i: %d, area: %f, center: %f, %f, lr: %s, fb: %s", maxBloblIndex, maxBlobSize, x, y, lr.c_str(), fb.c_str());
 			}
+		} else {
+			stringstream msg;
+			msg << "NearCamera:NotFound;LEFT-RIGHT:LR_OK;FRONT-BACK:NEAR;X:0;Y:0;AREA:0;I:0;ROWS:"
+				<< cv_ptr->image.rows
+				<< ";COLS:" << cv_ptr->image.cols;
+			std_msgs::String message;
+			message.data = msg.str();
+			nearSampleFoundPub_.publish(message);
 		}
 
 		if (showWindows_) {
@@ -171,7 +176,7 @@ FindObject* FindObject::Singleton() {
 		singleton->iHighS = 255;
 		singleton->iLowV = 67;
 		singleton->iHighV = 255;
-		singleton->contourSizeThreshold = 200;
+		singleton->contourSizeThreshold = 100;
 
 
 		singleton->f = boost::bind(&FindObject::configurationCallback, _1, _2);
