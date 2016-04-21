@@ -1,0 +1,12 @@
+<launch>
+	<arg name="show_windows" default="true" doc="true => show X-window panes" />
+	<arg name="mid_image_topic_name" default="/rosberrypi_cam/image_raw" doc="camera topic name" />
+
+	<!--node pkg="rosberrypi_cam" name="rosberrypi_cam" type="rosberrypi_cam_node" respawn="true" output="screen" >
+	</node-->
+	<node pkg="kaimi_mid_camera" name="kaimi_mid_camera" type="kaimi_mid_camera_node" respawn="true" output="screen" >
+		<param name="show_windows" value="$(arg show_windows)" type="bool" />
+		<param name="image_topic_name" value="$(arg mid_image_topic_name)" type="str" />"
+	</node>
+
+</launch>
