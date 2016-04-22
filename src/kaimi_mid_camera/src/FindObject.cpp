@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include "/usr/local/include/raspicam/raspicam_cv.h"
 #include <camera_info_manager/camera_info_manager.h>
 
 #include "FindObject.h"
@@ -103,7 +102,7 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 				int rows = cv_ptr->image.rows;
 
 				if (showWindows_) {
-					Scalar color = Scalar(rand() % 255, rand() % 255, rand() % 255);
+					Scalar color = Scalar(0, 0, 255);
 					circle(cv_ptr->image, center, (int)radius, color, 2, 8, 0 );
 				}
 
@@ -113,7 +112,8 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 					<< ";AREA:" << maxBlobSize
 					<< ";I:" << maxBlobIndex
 					<< ";ROWS:" << cv_ptr->image.rows
-					<< ";COLS:" << cv_ptr->image.cols;
+					<< ";COLS:" << cv_ptr->image.cols
+					<< ";CONTOURS:" << contours.size();
 				std_msgs::String message;
 				message.data = msg.str();
 				midSampleFoundPub_.publish(message);
@@ -142,13 +142,13 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 
 FindObject::FindObject() : 
 	it_(nh_),
-	iLowH(111),
+	iLowH(78),
 	iHighH(150),
-	iLowS(10),
-	iHighS(210),
-	iLowV(20),
-	iHighV(170),
-	contourSizeThreshold(100),
+	iLowS(124),
+	iHighS(255),
+	iLowV(0),
+	iHighV(70),
+	contourSizeThreshold(500),
 	showWindows_(false) {
 //	f = boost::bind(&FindObject::configurationCallback, _1, _2);
 //	dynamicConfigurationServer.setCallback(f);
@@ -185,7 +185,7 @@ FindObject::FindObject() :
 		cvCreateTrackbar("LowV", controlWindowName, &iLowV, 255); //Value (0 - 255)
 		cvCreateTrackbar("HighV", controlWindowName, &iHighV, 255);
 
-		cvCreateTrackbar("contourSizeThreshold", controlWindowName, &contourSizeThreshold, 10000);
+		cvCreateTrackbar("contourSizeThreshold", controlWindowName, &contourSizeThreshold, 2000);
 	}
 
 	image_sub_ = it_.subscribe(imageTopicName_, 1, &FindObject::imageCb, this);
