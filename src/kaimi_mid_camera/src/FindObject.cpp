@@ -136,12 +136,12 @@ void FindObject::imageCb(const sensor_msgs::ImageConstPtr& msg) {
 			ROS_INFO("[FindObject::imageCb] showed images");
 			cv::waitKey(25);
 		}
-
     }
 }
 
 
-FindObject::FindObject() : it_(nh_),
+FindObject::FindObject() : 
+	it_(nh_),
 	iLowH(111),
 	iHighH(150),
 	iLowS(10),
@@ -149,25 +149,30 @@ FindObject::FindObject() : it_(nh_),
 	iLowV(20),
 	iHighV(170),
 	contourSizeThreshold(100),
-	showWindows_(false)
-	{
+	showWindows_(false) {
 //	f = boost::bind(&FindObject::configurationCallback, _1, _2);
 //	dynamicConfigurationServer.setCallback(f);
 
-	ros::param::get("~image_topic_name", imageTopicName_);
-	ros::param::get("~show_windows", showWindows_);
-	ROS_INFO("PARAM image_topic_name: %s", imageTopicName_.c_str());
+	ROS_INFO("Namespace: %s", nh_.getNamespace().c_str());//#####
+
+	if (!ros::param::get("~mid_image_topic_name", imageTopicName_)) {
+		ROS_ERROR("FindObject::FindObject missing ~mid_image_topic_name parameter");
+	}
+
+	if (!ros::param::get("~show_windows", showWindows_)) {
+		ROS_ERROR("FindObject::FindObject missing ~show_windows parameter");
+	}
+
+	ROS_INFO("PARAM mid_image_topic_name: %s", imageTopicName_.c_str());
 	ROS_INFO("PARAM show_windows: %d", showWindows_);
 	ROS_INFO("[KaimiMidCamera iLowH: %d, iHighH: %d, iLowS: %d, iHighS: %d, iLowV: %d, iHighV: %d", iLowH, iHighH, iLowS, iHighS, iLowV, iHighV);
-
-	showWindows_ = true;
 
 	midSampleFoundPub_ = nh_.advertise<std_msgs::String>("midSampleFound", 2);
 	if (showWindows_) {
 		static const char* controlWindowName = "[kaimi_mid_camera] Control";
 
-    	namedWindow("[kaimi_mid_camera] Raw Image", CV_WINDOW_AUTOSIZE);
-    	namedWindow("[kaimi_mid_camera] Thresholded Image", CV_WINDOW_AUTOSIZE);
+    	namedWindow("[kaimi_mid_camera] Raw Image", CV_WINDOW_NORMAL);
+    	namedWindow("[kaimi_mid_camera] Thresholded Image", CV_WINDOW_NORMAL);
 
 		// Create trackbars in "Control" window
 		namedWindow(controlWindowName, CV_WINDOW_AUTOSIZE); //create a window called "Control"
@@ -184,38 +189,6 @@ FindObject::FindObject() : it_(nh_),
 	}
 
 	image_sub_ = it_.subscribe(imageTopicName_, 1, &FindObject::imageCb, this);
-
-
- //    int fps;
- //    nh_.param("fps", fps, 20);
- //    std::string color_mode = "rgb8";
-
- //    //image_transport::ImageTransport it(nh);
- //    // std::string camera_name = nh.getNamespace();
- //    // camera_info_manager::CameraInfoManager cinfo_(nh, camera_name);
-
- //    raspicam::RaspiCam_Cv cap;
- //    cap.open();
-	// ros::Rate rate(fps);
- //    while(ros::ok()) {
- //        Mat imgOriginal;
-
- //        //bool bSuccess = cap.read(imgOriginal); // read a new frame from video
- //        cap.grab();
- //        bool bSuccess = true;
- //        cap.retrieve(imgOriginal); // read a new frame from video
-
- //        // std_msgs::Header header();
- //        // cv_bridge::CvImage imgmsg;
- //        // sensor_msgs::CameraInfo ci = cinfo_.getCameraInfo();
- //        // imgmsg.header.frame_id = camera_name + "_optical_frame";
- //        // ci.header.frame_id = imgmsg.header.frame_id;
- //        // imgmsg.encoding = sensor_msgs::image_encodings::BGR8;// color_mode;
- //        // imgmsg.image = imgOriginal;
- //        imageCb(imgOriginal);//, ci, ros::Time::now());
- //        rate.sleep();
- //        ros::spinOnce();
-	// };
 }
 
 FindObject& FindObject::Singleton() {

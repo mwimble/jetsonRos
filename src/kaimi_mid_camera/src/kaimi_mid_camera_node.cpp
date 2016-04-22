@@ -8,8 +8,11 @@
 FindObject* findObject; 
 
 int main(int argc, char** argv) {
-	ros::init(argc, argv, "kinect_mid_camera_node");
+	ROS_INFO("##### main start");
+	ros::init(argc, argv, "kaimi_mid_camera_node");
+	ROS_INFO("##### main post ros::init");
 	findObject = &FindObject::Singleton();
+	ROS_INFO("##### main post FindObject::Singleton()");
 	ros::spin();
 	return 0;
 }
