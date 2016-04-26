@@ -169,6 +169,7 @@ FindObject::FindObject() :
 
 	midSampleFoundPub_ = nh_.advertise<std_msgs::String>("midSampleFound", 2);
 	if (showWindows_) {
+		ROS_INFO("Creating control window");
 		static const char* controlWindowName = "[kaimi_mid_camera] Control";
 
     	namedWindow("[kaimi_mid_camera] Raw Image", CV_WINDOW_NORMAL);

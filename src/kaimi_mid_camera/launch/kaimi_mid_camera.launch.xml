@@ -4,7 +4,7 @@
 
 	<node pkg="kaimi_mid_camera" name="kaimi_mid_camera" type="kaimi_mid_camera_node" respawn="true" output="screen" >
 		<param name="show_windows" value="$(arg show_windows)" type="bool" />
-		<param name="image_topic_name" value="$(arg mid_image_topic_name)" type="str" />"
+		<param name="mid_image_topic_name" value="$(arg mid_image_topic_name)" type="str" />"
 	</node>
 
 </launch>
